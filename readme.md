@@ -2,7 +2,7 @@
 
 CDKv2 code which builds out infrastructure for a three tier web application.
 
-![Diagram of AWS Architecture for three tier web application](https://github.com/malbertus/basic_web_app_cdk/doc/diagram.png "Architecture Diagram")
+![Diagram of AWS Architecture for three tier web application](https://github.com/malbertus/basic_web_app_cdk/blob/main/doc/diagram.png "Architecture Diagram")
 
 ## Infrastructure
 
