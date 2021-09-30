@@ -66,3 +66,5 @@ The following variables should be customised to suit your scenario
 
 - The DNS zone must be created outside of this CDK code, however the subdomains for the application are created with this code.
 - A single NAT gateway has been provisioned. This results in inter-AZ traffic flow for internet connectivity while the application instances bootstrap, however this was necessary to avoid using too many elastic IP addresses and hitting the service quota (5x Elastic IPs per region) if multiple deployments are created within the same region - for example, a development deployment and production deployment.
+- A CDN policy has been created which enables caching. The [basic web application](https://github.com/malbertus/basic_web_app) has been built to pass headers disabling caching for dynamic pages, but the CDN should cache static files like images, javascript and css.
+- It is recommended to conduct any web load testing (using tools such as [Locust](https://github.com/locustio/locust)) against the ALB domain name
