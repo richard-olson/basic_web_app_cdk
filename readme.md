@@ -14,7 +14,8 @@ The following infrastructure will be built
   - Isolated for the database instances
 - Security groups with appropriate inbound permissions
 - Outbound internet access for application instances to bootstrap
-- An Application Load Balancer
+- An Application Load Balancer with a listener targeting the instances within the Auto Scale Group
+- A single NAT gateway
 - An EC2 Auto Scaling Group
   - Amazon Linux 2 instances
   - A user data script to bootstrap instances with a [basic web application](https://github.com/malbertus/basic_web_app) and Apache
@@ -47,20 +48,21 @@ Configuration variables are found in `three_tier/properties.py`.
 
 The following variables need to be customised for your own environment
 
-- region
-- my_dns_zone_id
-- keypair
+- **region:** Used to configure the region which CloudWatch metrics are gathered
+- **my_dns_zone_id:** used by CDK to reference existing Route53 DNS zone
+- **keypair:** ssh keypair used to access instances
 
 The following variables should be customised to suit your scenario
 
-- app_name
-- environment
-- domains
-- max_azs
-- asg_min_instances
-- asg_min_instances
-- rds_num_instances
+- **app_name:** determines part of the name of the CloudFormation stack and the application itself
+- **environment:** determines part of the name of the CloudFormation stack and the application itself. Also ties into domain name
+- **domains:** needs root domain name of Route53 zone. Also uses the `environment` varible for sub domain creation; shortens production to 'prod' and development to 'dev' when creating sub domains.
+- **max_azs:** default is 3 as nearly all regions have at least 3 available
+- **asg_min_instances:** default is 3 to match the default number of availability zones
+- **asg_max_instances:** default is 6
+- **rds_num_instances:** default is 3 to match the default number of availability zones
 
 ## Notes
 
 - The DNS zone must be created outside of this CDK code, however the subdomains for the application are created with this code.
+- A single NAT gateway has been provisioned. This results in inter-AZ traffic flow for internet connectivity while the application instances bootstrap, however this was necessary to avoid using too many elastic IP addresses and hitting the service quota (5x Elastic IPs per region) if multiple deployments are created within the same region - for example, a development deployment and production deployment.
